@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parser</title>
+    <script>
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const surname = document.getElementById("surname").value;
+            const messageBox = document.getElementById("message");
+
+            if (!surname) {
+                messageBox.textContent = "Введите фамилию автора.";
+                return;
+            }
+
+            try {
+                const response = await fetch("{% url 'parse_library' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                    body: JSON.stringify({ surname }),
+                });
+                const result = await response.json();
+                if (result.success) {
+                    messageBox.textContent = `Успешно: ${result.message}`;
+                } else {
+                    messageBox.textContent = `Ошибка: ${result.error}`;
+                }
+            } catch (error) {
+                messageBox.textContent = `Ошибка запроса: ${error.message}`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Parser Page</h1>
+    <form onsubmit="handleSubmit(event)">
+        {% csrf_token %}
+        <label for="surname">Введите фамилию автора:</label>
+        <input type="text" id="surname" name="surname" placeholder="Иванов" required>
+        <button type="submit">Запустить парсер</button>
+    </form>
+    <p id="message"></p>
+</body>
+</html>

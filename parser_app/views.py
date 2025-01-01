@@ -6,6 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from .models import Author, PublicationStatistics, Publication
 import json
@@ -23,6 +24,13 @@ def parse_library(request):
             return JsonResponse({"success": False, "error": "Surname is required."})
     except json.JSONDecodeError:
         return JsonResponse({"success": False, "error": "Invalid JSON."})
+
+    # Проверка существования автора
+    if Author.objects.filter(full_name=surname).exists():
+        return JsonResponse({
+            "success": False,
+            "error": "Author with this surname already exists in the database."
+        })
 
     # Путь к WebDriver
     driver_path = "./msedgedriver.exe"
@@ -94,18 +102,7 @@ def parse_library(request):
             publication_count = 0
 
         # Сохранение в базу данных
-        author, created = Author.objects.get_or_create(
-            full_name=surname,
-            defaults={"publication_count": publication_count},
-        )
-
-        if not created:
-            author.publication_count = publication_count
-            author.save()
-
-        # Очистка старых данных
-        PublicationStatistics.objects.filter(author=author).delete()
-        Publication.objects.filter(author=author).delete()
+        author = Author.objects.create(full_name=surname, publication_count=publication_count)
 
         for article in articles_data:
             Publication.objects.create(author=author, title=article)
@@ -151,3 +148,8 @@ def parse_library(request):
 
     finally:
         driver.quit()
+
+def parse_view(request):
+    if request.method == "GET":
+        return render(request, "parser_app/parser.html")
+
