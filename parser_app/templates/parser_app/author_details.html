@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали автора</title>
+</head>
+<body>
+    <h1>Детали автора: {{ author.full_name }}</h1>
+    <p>Количество публикаций: {{ author.publication_count }}</p>
+
+    <h2>Публикации</h2>
+    <ul>
+        {% for publication in publications %}
+            <li>{{ publication.title }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Статистика</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Год</th>
+                <th>Монография</th>
+                <th>Учебник</th>
+                <th>...</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in statistics %}
+                <tr>
+                    <td>{{ stat.year }}</td>
+                    <td>{{ stat.monograph }}</td>
+                    <td>{{ stat.textbook }}</td>
+                    <td>...</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

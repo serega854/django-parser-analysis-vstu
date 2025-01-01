@@ -11,6 +11,26 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Author, PublicationStatistics, Publication
 import json
 
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
+from .models import Author
+
+#чтоб на главном экране выводить табличку с ключами - фио авторов
+def get_authors(request):
+    if request.method == "GET":
+        authors = Author.objects.all()
+        data = [
+            {"id": author.id, "full_name": author.full_name, "publication_count": author.publication_count}
+            for author in authors
+        ]
+        return JsonResponse({"success": True, "authors": data})
+    return JsonResponse({"success": False, "error": "Invalid request method."})
+
+def author_details(request, author_id):
+    author = get_object_or_404(Author, id=author_id)
+    return render(request, 'parser_app/author_details.html', {'author': author})
+
 @csrf_exempt
 def parse_library(request):
     if request.method != "POST":
