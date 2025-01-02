@@ -48,7 +48,7 @@
                             <td>${author.full_name}</td>
                             <td>${author.publication_count}</td>
                             <td>
-                                <a href="{% url 'author_details' author_id=0 %}".replace('0', author.id)">Подробнее</a>
+                                <button onclick="viewAuthorDetails(${author.id})">Подробнее</button>
                                 <button onclick="deleteAuthor(${author.id})">Удалить</button>
                             </td>
                         </tr>
@@ -60,6 +60,11 @@
                 authorsTable.innerHTML = '<tr><td colspan="3">Ошибка запроса</td></tr>';
             }
         }
+
+        async function viewAuthorDetails(authorId) {
+            window.location.href = `/author_details/${authorId}/`;
+        }
+
 
         async function deleteAuthor(authorId) {
             if (!confirm("Вы уверены, что хотите удалить этого автора?")) {

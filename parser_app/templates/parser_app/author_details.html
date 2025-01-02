@@ -6,34 +6,48 @@
     <title>Детали автора</title>
 </head>
 <body>
-    <h1>Детали автора: {{ author.full_name }}</h1>
-    <p>Количество публикаций: {{ author.publication_count }}</p>
+    <h1>Детали автора</h1>
+    <h2>ФИО: {{ author.full_name }}</h2>
+    <h3>Общее количество публикаций: {{ author.publication_count }}</h3>
 
-    <h2>Публикации</h2>
-    <ul>
-        {% for publication in publications %}
-            <li>{{ publication.title }}</li>
-        {% endfor %}
-    </ul>
-
-    <h2>Статистика</h2>
+    <h2>Статистика публикаций</h2>
     <table border="1">
         <thead>
             <tr>
                 <th>Год</th>
                 <th>Монография</th>
                 <th>Учебник</th>
-                <th>...</th>
+                <th>Учебное пособие</th>
+                <th>Учебное пособие (гриф)</th>
+                <th>Прочие</th>
             </tr>
         </thead>
         <tbody>
-            {% for stat in statistics %}
-                <tr>
-                    <td>{{ stat.year }}</td>
-                    <td>{{ stat.monograph }}</td>
-                    <td>{{ stat.textbook }}</td>
-                    <td>...</td>
-                </tr>
+            {% for stat in publication_statistics %}
+            <tr>
+                <td>{{ stat.year }}</td>
+                <td>{{ stat.monograph }}</td>
+                <td>{{ stat.textbook }}</td>
+                <td>{{ stat.tutorial }}</td>
+                <td>{{ stat.tutorial_griff }}</td>
+                <td>{{ stat.other_publications }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Публикации</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Название публикации</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for publication in publications %}
+            <tr>
+                <td>{{ publication.title }}</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>

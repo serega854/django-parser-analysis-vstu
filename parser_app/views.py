@@ -43,9 +43,21 @@ def get_authors(request):
         return JsonResponse({"success": True, "authors": data})
     return JsonResponse({"success": False, "error": "Invalid request method."})
 
+
 def author_details(request, author_id):
+    # Получение автора по ID или возврат 404, если не найден
     author = get_object_or_404(Author, id=author_id)
-    return render(request, 'parser_app/author_details.html', {'author': author})
+
+    # Получение связанных данных
+    publication_statistics = author.statistics.all()
+    publications = author.publications.all()
+
+    # Рендеринг страницы с передачей данных в шаблон
+    return render(request, 'parser_app/author_details.html', {
+        'author': author,
+        'publication_statistics': publication_statistics,
+        'publications': publications,
+    })
 
 @csrf_exempt
 def parse_library(request):
