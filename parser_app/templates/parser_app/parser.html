@@ -49,6 +49,7 @@
                             <td>${author.publication_count}</td>
                             <td>
                                 <a href="{% url 'author_details' author_id=0 %}".replace('0', author.id)">Подробнее</a>
+                                <button onclick="deleteAuthor(${author.id})">Удалить</button>
                             </td>
                         </tr>
                     `).join('');
@@ -57,6 +58,30 @@
                 }
             } catch (error) {
                 authorsTable.innerHTML = '<tr><td colspan="3">Ошибка запроса</td></tr>';
+            }
+        }
+
+        async function deleteAuthor(authorId) {
+            if (!confirm("Вы уверены, что хотите удалить этого автора?")) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/delete_author/${authorId}/`, {
+                    method: "DELETE",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert("Автор успешно удалён.");
+                    await fetchAuthors();
+                } else {
+                    alert(`Ошибка: ${data.error}`);
+                }
+            } catch (error) {
+                alert(`Ошибка запроса: ${error.message}`);
             }
         }
 

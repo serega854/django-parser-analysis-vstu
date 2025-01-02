@@ -16,6 +16,22 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from .models import Author
 
+
+#чтоб удалять авторов
+
+def delete_author(request, author_id):
+    if request.method == "DELETE":
+        try:
+            author = Author.objects.get(id=author_id)
+            author.delete()  # Удаление автора автоматически удалит все связанные записи (on_delete=models.CASCADE)
+            return JsonResponse({"success": True, "message": "Автор успешно удалён."})
+        except Author.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Автор не найден."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+    return JsonResponse({"success": False, "error": "Недопустимый метод запроса."})
+
+
 #чтоб на главном экране выводить табличку с ключами - фио авторов
 def get_authors(request):
     if request.method == "GET":
