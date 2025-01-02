@@ -219,6 +219,14 @@ from django.shortcuts import render
 from .models import PublicationStatistics
 from .services.statistics_analyzer import StatisticsAnalyzer
 
+from django.shortcuts import render
+from .models import PublicationStatistics
+from .services.statistics_analyzer import StatisticsAnalyzer
+
+from django.shortcuts import render
+from .models import PublicationStatistics
+from .services.statistics_analyzer import StatisticsAnalyzer
+
 def analyze_authors(request):
     # Получаем авторов для анализа (через фильтр по ID, если необходимо)
     ids = request.GET.getlist('ids')  # Принимаем ID авторов из GET-запроса
@@ -228,17 +236,27 @@ def analyze_authors(request):
     analyzer = StatisticsAnalyzer(queryset)
     aggregated_results = analyzer.analyze()
 
+    # Получаем список авторов
+    authors = queryset.values_list('author__full_name', flat=True).distinct()
+
+    # Подготовка данных для шаблона, включая новые поля для анализа
+    publication_columns = [
+        'monograph', 'textbook', 'tutorial', 'tutorial_griff',
+        'article_russian_journal', 'article_foreign_journal', 'izvestia_vstu',
+        'journals_vstu', 'article_russian_collection', 'article_foreign_collection',
+        'theses', 'educational_complex', 'deposited_manuscript', 'patent_document',
+        'certificate', 'other_publications'
+    ]
+
+    # Создаём словарь с данными для каждого автора, если нужно
+    author_stats = {author: {param: analyzer.aggregate_statistics(param) for param in publication_columns} for author in authors}
+
     # Отправляем данные в шаблон
     return render(request, 'parser_app/analyze_authors.html', {
         'aggregated_results': aggregated_results,
-        'authors': queryset.values_list('author__full_name', flat=True).distinct(),
+        'authors': authors,
+        'author_stats': author_stats,  # Новый контекст для авторов с подробной статистикой
     })
-
-
-
-
-
-
 
 
 

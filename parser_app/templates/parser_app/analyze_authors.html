@@ -34,13 +34,9 @@
         </tbody>
     </table>
 
-    <h2>Графики</h2>
-    <div>
-        {% for param, graph in graphs.items %}
-            <h3>{{ param }}</h3>
-            <img src="data:image/png;base64,{{ graph }}" alt="{{ param }}">
-        {% endfor %}
-    </div>
+    <h2>Данные графиков</h2>
+<pre>{{ graphs }}</pre>
+
 
     <h2>Авторы</h2>
     <ul>
