@@ -1,5 +1,3 @@
-<!-- author_details.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,11 +6,21 @@
     <title>Детали автора</title>
 </head>
 <body>
+
+
+    <br><br>
+    <a href="javascript:history.back()">
+        <button>Назад</button>
+    </a>
+ <br><br>
     <h1>Детали автора</h1>
     <h2>ФИО: {{ author.full_name }}</h2>
     <h3>Общее количество публикаций: {{ author.publication_count }}</h3>
 
     <h2>Статистика публикаций</h2>
+
+
+
     <table border="1">
         <thead>
             <tr>
@@ -75,5 +83,7 @@
             {% endfor %}
         </tbody>
     </table>
+
+
 </body>
 </html>
