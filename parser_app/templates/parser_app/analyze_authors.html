@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,22 +21,139 @@
             </tr>
         </thead>
         <tbody>
-            {% for param, values in aggregated_results.items %}
-                <tr>
-                    <td>{{ param }}</td>
-                    <td>{{ values.sum }}</td>
-                    <td>{{ values.average }}</td>
-                    <td>{{ values.median }}</td>
-                    <td>{{ values.max }}</td>
-                    <td>{{ values.min }}</td>
-                </tr>
-            {% endfor %}
+            <tr>
+                <td>Монография</td>
+                <td>{{ aggregated_results.monograph.sum }}</td>
+                <td>{{ aggregated_results.monograph.average }}</td>
+                <td>{{ aggregated_results.monograph.median }}</td>
+                <td>{{ aggregated_results.monograph.max }}</td>
+                <td>{{ aggregated_results.monograph.min }}</td>
+            </tr>
+            <tr>
+                <td>Учебник</td>
+                <td>{{ aggregated_results.textbook.sum }}</td>
+                <td>{{ aggregated_results.textbook.average }}</td>
+                <td>{{ aggregated_results.textbook.median }}</td>
+                <td>{{ aggregated_results.textbook.max }}</td>
+                <td>{{ aggregated_results.textbook.min }}</td>
+            </tr>
+            <tr>
+                <td>Учебное пособие</td>
+                <td>{{ aggregated_results.tutorial.sum }}</td>
+                <td>{{ aggregated_results.tutorial.average }}</td>
+                <td>{{ aggregated_results.tutorial.median }}</td>
+                <td>{{ aggregated_results.tutorial.max }}</td>
+                <td>{{ aggregated_results.tutorial.min }}</td>
+            </tr>
+            <tr>
+                <td>Учебное пособие (гриф)</td>
+                <td>{{ aggregated_results.tutorial_griff.sum }}</td>
+                <td>{{ aggregated_results.tutorial_griff.average }}</td>
+                <td>{{ aggregated_results.tutorial_griff.median }}</td>
+                <td>{{ aggregated_results.tutorial_griff.max }}</td>
+                <td>{{ aggregated_results.tutorial_griff.min }}</td>
+            </tr>
+            <tr>
+                <td>Статья из российского журнала</td>
+                <td>{{ aggregated_results.article_russian_journal.sum }}</td>
+                <td>{{ aggregated_results.article_russian_journal.average }}</td>
+                <td>{{ aggregated_results.article_russian_journal.median }}</td>
+                <td>{{ aggregated_results.article_russian_journal.max }}</td>
+                <td>{{ aggregated_results.article_russian_journal.min }}</td>
+            </tr>
+            <tr>
+                <td>Статья из зарубежного журнала</td>
+                <td>{{ aggregated_results.article_foreign_journal.sum }}</td>
+                <td>{{ aggregated_results.article_foreign_journal.average }}</td>
+                <td>{{ aggregated_results.article_foreign_journal.median }}</td>
+                <td>{{ aggregated_results.article_foreign_journal.max }}</td>
+                <td>{{ aggregated_results.article_foreign_journal.min }}</td>
+            </tr>
+            <tr>
+                <td>Известия ВолгГТУ</td>
+                <td>{{ aggregated_results.izvestia_vstu.sum }}</td>
+                <td>{{ aggregated_results.izvestia_vstu.average }}</td>
+                <td>{{ aggregated_results.izvestia_vstu.median }}</td>
+                <td>{{ aggregated_results.izvestia_vstu.max }}</td>
+                <td>{{ aggregated_results.izvestia_vstu.min }}</td>
+            </tr>
+            <tr>
+                <td>Журналы ВолгГТУ</td>
+                <td>{{ aggregated_results.journals_vstu.sum }}</td>
+                <td>{{ aggregated_results.journals_vstu.average }}</td>
+                <td>{{ aggregated_results.journals_vstu.median }}</td>
+                <td>{{ aggregated_results.journals_vstu.max }}</td>
+                <td>{{ aggregated_results.journals_vstu.min }}</td>
+            </tr>
+            <tr>
+                <td>Статья из российского сборника</td>
+                <td>{{ aggregated_results.article_russian_collection.sum }}</td>
+                <td>{{ aggregated_results.article_russian_collection.average }}</td>
+                <td>{{ aggregated_results.article_russian_collection.median }}</td>
+                <td>{{ aggregated_results.article_russian_collection.max }}</td>
+                <td>{{ aggregated_results.article_russian_collection.min }}</td>
+            </tr>
+            <tr>
+                <td>Статья из зарубежного сборника</td>
+                <td>{{ aggregated_results.article_foreign_collection.sum }}</td>
+                <td>{{ aggregated_results.article_foreign_collection.average }}</td>
+                <td>{{ aggregated_results.article_foreign_collection.median }}</td>
+                <td>{{ aggregated_results.article_foreign_collection.max }}</td>
+                <td>{{ aggregated_results.article_foreign_collection.min }}</td>
+            </tr>
+            <tr>
+                <td>Тезисы докладов</td>
+                <td>{{ aggregated_results.theses.sum }}</td>
+                <td>{{ aggregated_results.theses.average }}</td>
+                <td>{{ aggregated_results.theses.median }}</td>
+                <td>{{ aggregated_results.theses.max }}</td>
+                <td>{{ aggregated_results.theses.min }}</td>
+            </tr>
+            <tr>
+                <td>Учебно-методический комплекс</td>
+                <td>{{ aggregated_results.educational_complex.sum }}</td>
+                <td>{{ aggregated_results.educational_complex.average }}</td>
+                <td>{{ aggregated_results.educational_complex.median }}</td>
+                <td>{{ aggregated_results.educational_complex.max }}</td>
+                <td>{{ aggregated_results.educational_complex.min }}</td>
+            </tr>
+            <tr>
+                <td>Депонированная рукопись</td>
+                <td>{{ aggregated_results.deposited_manuscript.sum }}</td>
+                <td>{{ aggregated_results.deposited_manuscript.average }}</td>
+                <td>{{ aggregated_results.deposited_manuscript.median }}</td>
+                <td>{{ aggregated_results.deposited_manuscript.max }}</td>
+                <td>{{ aggregated_results.deposited_manuscript.min }}</td>
+            </tr>
+            <tr>
+                <td>Патентный документ</td>
+                <td>{{ aggregated_results.patent_document.sum }}</td>
+                <td>{{ aggregated_results.patent_document.average }}</td>
+                <td>{{ aggregated_results.patent_document.median }}</td>
+                <td>{{ aggregated_results.patent_document.max }}</td>
+                <td>{{ aggregated_results.patent_document.min }}</td>
+            </tr>
+            <tr>
+                <td>Свидетельство</td>
+                <td>{{ aggregated_results.certificate.sum }}</td>
+                <td>{{ aggregated_results.certificate.average }}</td>
+                <td>{{ aggregated_results.certificate.median }}</td>
+                <td>{{ aggregated_results.certificate.max }}</td>
+                <td>{{ aggregated_results.certificate.min }}</td>
+            </tr>
+            <tr>
+                <td>Прочие публикации</td>
+                <td>{{ aggregated_results.other_publications.sum }}</td>
+                <td>{{ aggregated_results.other_publications.average }}</td>
+                <td>{{ aggregated_results.other_publications.median }}</td>
+                <td>{{ aggregated_results.other_publications.max }}</td>
+                <td>{{ aggregated_results.other_publications.min }}</td>
+            </tr>
         </tbody>
     </table>
 
     <h2>Данные графиков</h2>
-<pre>{{ graphs }}</pre>
-
+    <pre>{{ graphs }}</pre>
 
     <h2>Авторы</h2>
     <ul>
