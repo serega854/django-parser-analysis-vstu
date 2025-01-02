@@ -13,11 +13,10 @@ class StatisticsAnalyzer:
         self.data = self._prepare_data(queryset)
 
     def _prepare_data(self, queryset):
-        """
-        Преобразование queryset в DataFrame для анализа.
-        """
-        records = [
-            {
+        records = []
+        for stat in queryset:
+            print(f"Processing: {stat.author.full_name} - {stat.year}")
+            records.append({
                 'author': stat.author.full_name,
                 'year': stat.year,
                 'monograph': stat.monograph,
@@ -36,9 +35,8 @@ class StatisticsAnalyzer:
                 'patent_document': stat.patent_document,
                 'certificate': stat.certificate,
                 'other_publications': stat.other_publications,
-            }
-            for stat in queryset
-        ]
+            })
+        print(f"Records: {records}")  # Проверка собранных данных
         return pd.DataFrame(records)
 
     def aggregate_statistics(self, column):
@@ -62,7 +60,12 @@ class StatisticsAnalyzer:
         Анализ данных и возвращение агрегирующих значений для всех колонок.
         """
         results = {}
-        for column in ['monograph', 'textbook', 'tutorial', 'other_publications']:
+        for column in ['monograph', 'textbook', 'tutorial', 'tutorial_griff',
+                                'article_russian_journal', 'article_foreign_journal',
+                                'izvestia_vstu', 'journals_vstu', 'article_russian_collection',
+                                'article_foreign_collection', 'theses', 'educational_complex',
+                                'deposited_manuscript', 'patent_document', 'certificate',
+                                'other_publications']:
             if column in self.data.columns:
                 results[column] = self.aggregate_statistics(column)
         return results
