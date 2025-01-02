@@ -1,3 +1,5 @@
+#urls.py
+
 from django.urls import path
 from .views import parse_library, parse_view, get_authors, author_details, delete_author, analyze_authors
 
