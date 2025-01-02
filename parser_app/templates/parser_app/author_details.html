@@ -19,7 +19,18 @@
                 <th>Учебник</th>
                 <th>Учебное пособие</th>
                 <th>Учебное пособие (гриф)</th>
-                <th>Прочие</th>
+                <th>Статья (рос. журнал)</th>
+                <th>Статья (зар. журнал)</th>
+                <th>Известия ВолгГТУ</th>
+                <th>Журналы ВолгГТУ</th>
+                <th>Статья (рос. сборник)</th>
+                <th>Статья (зар. сборник)</th>
+                <th>Тезисы</th>
+                <th>Учебно-методический комплекс</th>
+                <th>Депонированная рукопись</th>
+                <th>Патент</th>
+                <th>Свидетельство</th>
+                <th>Прочие публикации</th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +41,17 @@
                 <td>{{ stat.textbook }}</td>
                 <td>{{ stat.tutorial }}</td>
                 <td>{{ stat.tutorial_griff }}</td>
+                <td>{{ stat.article_russian_journal }}</td>
+                <td>{{ stat.article_foreign_journal }}</td>
+                <td>{{ stat.izvestia_vstu }}</td>
+                <td>{{ stat.journals_vstu }}</td>
+                <td>{{ stat.article_russian_collection }}</td>
+                <td>{{ stat.article_foreign_collection }}</td>
+                <td>{{ stat.theses }}</td>
+                <td>{{ stat.educational_complex }}</td>
+                <td>{{ stat.deposited_manuscript }}</td>
+                <td>{{ stat.patent_document }}</td>
+                <td>{{ stat.certificate }}</td>
                 <td>{{ stat.other_publications }}</td>
             </tr>
             {% endfor %}

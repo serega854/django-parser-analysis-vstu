@@ -98,7 +98,7 @@
     <form onsubmit="handleSubmit(event)">
         {% csrf_token %}
         <label for="surname">Введите фамилию автора:</label>
-        <input type="text" id="surname" name="surname" placeholder="Иванов" required>
+        <input type="text" id="surname" name="surname" placeholder="Иванов И. И." required>
         <button type="submit">Запустить парсер</button>
     </form>
     <p id="message"></p>
