@@ -228,18 +228,23 @@ from .models import PublicationStatistics
 from .services.statistics_analyzer import StatisticsAnalyzer
 
 def analyze_authors(request):
-    # Получаем авторов для анализа (через фильтр по ID, если необходимо)
-    ids = request.GET.getlist('ids')  # Принимаем ID авторов из GET-запроса
-    queryset = PublicationStatistics.objects.filter(author_id__in=ids) if ids else PublicationStatistics.objects.all()
+    # Get author IDs from the GET request
+    ids = request.GET.get('ids', '')  # Retrieve the 'ids' parameter
+    if ids:
+        # Split the comma-separated string into a list and convert to integers
+        ids = [int(id.strip()) for id in ids.split(',')]
+        queryset = PublicationStatistics.objects.filter(author_id__in=ids)
+    else:
+        queryset = PublicationStatistics.objects.all()
 
-    # Создаем анализатор и вычисляем статистику
+    # Create the statistics analyzer and compute the aggregated statistics
     analyzer = StatisticsAnalyzer(queryset)
     aggregated_results = analyzer.analyze()
 
-    # Получаем список авторов
+    # Get the distinct authors from the queryset
     authors = queryset.values_list('author__full_name', flat=True).distinct()
 
-    # Подготовка данных для шаблона, включая новые поля для анализа
+    # Prepare the data for the template, including per-author statistics
     publication_columns = [
         'monograph', 'textbook', 'tutorial', 'tutorial_griff',
         'article_russian_journal', 'article_foreign_journal', 'izvestia_vstu',
@@ -248,15 +253,16 @@ def analyze_authors(request):
         'certificate', 'other_publications'
     ]
 
-    # Создаём словарь с данными для каждого автора, если нужно
+    # Create a dictionary with statistics for each author, if needed
     author_stats = {author: {param: analyzer.aggregate_statistics(param) for param in publication_columns} for author in authors}
 
-    # Отправляем данные в шаблон
+    # Pass the data to the template
     return render(request, 'parser_app/analyze_authors.html', {
         'aggregated_results': aggregated_results,
         'authors': authors,
-        'author_stats': author_stats,  # Новый контекст для авторов с подробной статистикой
+        'author_stats': author_stats,  # New context for detailed author statistics
     })
+
 
 
 
