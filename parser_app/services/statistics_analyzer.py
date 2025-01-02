@@ -61,16 +61,8 @@ class StatisticsAnalyzer:
         """
         Анализ данных и возвращение агрегирующих значений для всех колонок.
         """
-        publication_columns = [
-            'monograph', 'textbook', 'tutorial', 'tutorial_griff',
-            'article_russian_journal', 'article_foreign_journal', 'izvestia_vstu',
-            'journals_vstu', 'article_russian_collection', 'article_foreign_collection',
-            'theses', 'educational_complex', 'deposited_manuscript', 'patent_document',
-            'certificate', 'other_publications'
-        ]
-
         results = {}
-        for column in publication_columns:
+        for column in ['monograph', 'textbook', 'tutorial', 'other_publications']:
             if column in self.data.columns:
                 results[column] = self.aggregate_statistics(column)
         return results
@@ -103,15 +95,6 @@ class StatisticsAnalyzer:
         plt.title('Boxplot публикаций')
         graphs['boxplot'] = self._save_plot()
 
-        # Парные графики (Pairplot)
-        sns.pairplot(self.data[['monograph', 'textbook', 'tutorial', 'tutorial_griff',
-                                'article_russian_journal', 'article_foreign_journal',
-                                'izvestia_vstu', 'journals_vstu', 'article_russian_collection',
-                                'article_foreign_collection', 'theses', 'educational_complex',
-                                'deposited_manuscript', 'patent_document', 'certificate',
-                                'other_publications']])
-        plt.suptitle('Парные графики', y=1.02)
-        graphs['pairplot'] = self._save_plot()
 
         return graphs
 
@@ -126,4 +109,3 @@ class StatisticsAnalyzer:
         img_data = buffer.getvalue()
         buffer.close()
         return base64.b64encode(img_data).decode('utf-8')
-

@@ -152,8 +152,16 @@
         </tbody>
     </table>
 
-    <h2>Данные графиков</h2>
-    <pre>{{ graphs }}</pre>
+    <h2>Графики</h2>
+    <div>
+        <h3>Распределение публикаций</h3>
+        <img src="data:image/png;base64,{{ graphs.distribution }}" alt="Распределение публикаций" />
+    </div>
+    <div>
+        <h3>Boxplot публикаций</h3>
+        <img src="data:image/png;base64,{{ graphs.boxplot }}" alt="Boxplot публикаций" />
+    </div>
+
 
     <h2>Авторы</h2>
     <ul>

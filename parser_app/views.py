@@ -255,14 +255,15 @@ def analyze_authors(request):
 
     # Create a dictionary with statistics for each author, if needed
     author_stats = {author: {param: analyzer.aggregate_statistics(param) for param in publication_columns} for author in authors}
+    graphs = analyzer.generate_graphs()
 
     # Pass the data to the template
     return render(request, 'parser_app/analyze_authors.html', {
         'aggregated_results': aggregated_results,
         'authors': authors,
         'author_stats': author_stats,  # New context for detailed author statistics
+        'graphs': graphs
+
+
+
     })
-
-
-
-
