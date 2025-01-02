@@ -1,9 +1,12 @@
+import matplotlib
+matplotlib.use('Agg')  # Используем бэкенд, не зависящий от GUI
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import os
 from io import BytesIO
 import base64
+from matplotlib import rcParams
 
 class StatisticsAnalyzer:
     def __init__(self, queryset):
@@ -11,6 +14,10 @@ class StatisticsAnalyzer:
         Инициализация с использованием queryset из базы данных.
         """
         self.data = self._prepare_data(queryset)
+
+        # Настройка для использования шрифтов с поддержкой кириллицы
+        rcParams['font.family'] = 'Arial'  # Или любой шрифт, поддерживающий кириллицу
+        rcParams['axes.unicode_minus'] = False  # Отключение проблемы с минусом в графиках
 
     def _prepare_data(self, queryset):
         records = []
@@ -60,12 +67,14 @@ class StatisticsAnalyzer:
         Анализ данных и возвращение агрегирующих значений для всех колонок.
         """
         results = {}
-        for column in ['monograph', 'textbook', 'tutorial', 'tutorial_griff',
-                                'article_russian_journal', 'article_foreign_journal',
-                                'izvestia_vstu', 'journals_vstu', 'article_russian_collection',
-                                'article_foreign_collection', 'theses', 'educational_complex',
-                                'deposited_manuscript', 'patent_document', 'certificate',
-                                'other_publications']:
+        # Ожидаем оригинальные английские названия столбцов для агрегации
+        for column in [
+            'monograph', 'textbook', 'tutorial', 'tutorial_griff',
+            'article_russian_journal', 'article_foreign_journal',
+            'izvestia_vstu', 'journals_vstu', 'article_russian_collection',
+            'article_foreign_collection', 'theses', 'educational_complex',
+            'deposited_manuscript', 'patent_document', 'certificate', 'other_publications'
+        ]:
             if column in self.data.columns:
                 results[column] = self.aggregate_statistics(column)
         return results
@@ -76,28 +85,38 @@ class StatisticsAnalyzer:
         """
         graphs = {}
 
-        # Распределение публикаций
-        plt.figure(figsize=(10, 6))
-        sns.histplot(self.data[['monograph', 'textbook', 'tutorial', 'tutorial_griff',
-                                'article_russian_journal', 'article_foreign_journal',
-                                'izvestia_vstu', 'journals_vstu', 'article_russian_collection',
-                                'article_foreign_collection', 'theses', 'educational_complex',
-                                'deposited_manuscript', 'patent_document', 'certificate',
-                                'other_publications']], kde=True, palette='muted')
-        plt.title('Распределение публикаций по типам')
-        graphs['distribution'] = self._save_plot()
+        # Переименовываем столбцы данных на русский для графиков
+        renamed_columns = {
+            'monograph': 'монография',
+            'textbook': 'учебник',
+            'tutorial': 'учебное_пособие',
+            'tutorial_griff': 'учебное_пособие_с_грифом',
+            'article_russian_journal': 'статья_в_российском_журнале',
+            'article_foreign_journal': 'статья_в_зарубежном_журнале',
+            'izvestia_vstu': 'известия_вту',
+            'journals_vstu': 'журналы_вту',
+            'article_russian_collection': 'статья_в_российском_сборнике',
+            'article_foreign_collection': 'статья_в_зарубежном_сборнике',
+            'theses': 'диссертации',
+            'educational_complex': 'образовательный_комплекс',
+            'deposited_manuscript': 'депонированный_рукопись',
+            'patent_document': 'патентный_документ',
+            'certificate': 'свидетельство',
+            'other_publications': 'другие_публикации'
+        }
 
-        # Boxplot для сравнения типов публикаций
-        plt.figure(figsize=(10, 6))
-        sns.boxplot(data=self.data[['monograph', 'textbook', 'tutorial', 'tutorial_griff',
-                                    'article_russian_journal', 'article_foreign_journal',
-                                    'izvestia_vstu', 'journals_vstu', 'article_russian_collection',
-                                    'article_foreign_collection', 'theses', 'educational_complex',
-                                    'deposited_manuscript', 'patent_document', 'certificate',
-                                    'other_publications']], palette='coolwarm')
-        plt.title('Boxplot публикаций')
-        graphs['boxplot'] = self._save_plot()
+        # График общего количества публикаций по годам с русскими названиями
+        plt.figure(figsize=(12, 6))
+        total_year_counts = self.data.groupby('year').sum()
 
+        # Переименование столбцов на русский только для графика
+        total_year_counts = total_year_counts.rename(columns=renamed_columns)
+
+        total_year_counts.plot(kind='line', figsize=(12, 6))
+        plt.title('Общее количество публикаций по годам')  # Русская надпись
+        plt.xlabel('Год')  # Русская надпись
+        plt.ylabel('Количество публикаций')  # Русская надпись
+        graphs['total_publications'] = self._save_plot()
 
         return graphs
 
