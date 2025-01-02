@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализ авторов</title>
+</head>
+<body>
+    <h1>Анализ выбранных авторов</h1>
+
+    <h2>Статистика</h2>
+    <div>
+        {{ statistics_table|safe }}
+    </div>
+
+    <h2>График</h2>
+    <div>
+        {% if graph %}
+            <img src="data:image/png;base64,{{ graph }}" alt="График статистики">
+        {% else %}
+            <p>Нет данных для отображения графика.</p>
+        {% endif %}
+    </div>
+
+    <h2>Выбранные авторы</h2>
+    <ul>
+        {% for author in authors %}
+            <li>{{ author.full_name }} ({{ author.publication_count }} публикаций)</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/">Вернуться на главную</a>
+</body>
+</html>

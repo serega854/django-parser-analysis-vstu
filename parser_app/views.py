@@ -17,6 +17,14 @@ from django.shortcuts import get_object_or_404, render
 from .models import Author
 
 
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import Author, PublicationStatistics
+import pandas as pd
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
+
 #чтоб удалять авторов
 
 def delete_author(request, author_id):
@@ -201,3 +209,48 @@ def parse_view(request):
     if request.method == "GET":
         return render(request, "parser_app/parser.html")
 
+
+
+def analyze_authors(request):
+    # Получаем список ID авторов из GET-запроса
+    ids = request.GET.get('ids', '').split(',')
+    authors = Author.objects.filter(id__in=ids).prefetch_related('statistics', 'publications')
+
+    # Подготовка данных для отображения
+    stats_data = []
+    for author in authors:
+        for stat in author.statistics.all():
+            stats_data.append({
+                'author': author.full_name,
+                'year': stat.year,
+                'monograph': stat.monograph,
+                'textbook': stat.textbook,
+                'tutorial': stat.tutorial,
+                'other_publications': stat.other_publications,
+            })
+
+    # Создаем DataFrame из данных статистики
+    df = pd.DataFrame(stats_data)
+
+    # Генерация графика для демонстрации
+    plt.figure(figsize=(10, 6))
+    if not df.empty:
+        df.groupby('year')['monograph'].sum().plot(kind='bar', color='skyblue')
+    plt.title('Сумма монографий по годам')
+    plt.xlabel('Год')
+    plt.ylabel('Количество монографий')
+
+    # Сохраняем график в формате base64
+    buf = BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    graph_base64 = base64.b64encode(buf.getvalue()).decode()
+    buf.close()
+
+    # Подготовка данных для таблицы
+    context = {
+        'authors': authors,
+        'statistics_table': df.to_html(index=False) if not df.empty else "Нет данных для отображения",
+        'graph': graph_base64,
+    }
+    return render(request, 'parser_app/analyze_authors.html', context)

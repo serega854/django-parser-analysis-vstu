@@ -45,6 +45,7 @@
                 if (data.success) {
                     authorsTable.innerHTML = data.authors.map(author => `
                         <tr>
+                            <td><input type="checkbox" class="author-checkbox" value="${author.id}"></td>
                             <td>${author.full_name}</td>
                             <td>${author.publication_count}</td>
                             <td>
@@ -54,17 +55,16 @@
                         </tr>
                     `).join('');
                 } else {
-                    authorsTable.innerHTML = '<tr><td colspan="3">Ошибка загрузки данных</td></tr>';
+                    authorsTable.innerHTML = '<tr><td colspan="4">Ошибка загрузки данных</td></tr>';
                 }
             } catch (error) {
-                authorsTable.innerHTML = '<tr><td colspan="3">Ошибка запроса</td></tr>';
+                authorsTable.innerHTML = '<tr><td colspan="4">Ошибка запроса</td></tr>';
             }
         }
 
         async function viewAuthorDetails(authorId) {
             window.location.href = `/author_details/${authorId}/`;
         }
-
 
         async function deleteAuthor(authorId) {
             if (!confirm("Вы уверены, что хотите удалить этого автора?")) {
@@ -90,6 +90,19 @@
             }
         }
 
+        async function handleAnalyzeSelectedAuthors() {
+            const selectedAuthors = Array.from(document.querySelectorAll(".author-checkbox:checked"))
+                .map(checkbox => checkbox.value);
+
+            if (selectedAuthors.length === 0) {
+                alert("Выберите хотя бы одного автора для анализа.");
+                return;
+            }
+
+            // Переход на страницу анализа авторов
+            window.location.href = `/analyze_authors/?ids=${selectedAuthors.join(',')}`;
+        }
+
         document.addEventListener("DOMContentLoaded", fetchAuthors);
     </script>
 </head>
@@ -107,6 +120,7 @@
     <table border="1">
         <thead>
             <tr>
+                <th>Выбрать</th>
                 <th>ФИО</th>
                 <th>Количество публикаций</th>
                 <th>Действия</th>
@@ -114,9 +128,10 @@
         </thead>
         <tbody id="authors-table">
             <tr>
-                <td colspan="3">Загрузка данных...</td>
+                <td colspan="4">Загрузка данных...</td>
             </tr>
         </tbody>
     </table>
+    <button onclick="handleAnalyzeSelectedAuthors()">Анализ выбранных авторов</button>
 </body>
 </html>
