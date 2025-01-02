@@ -213,46 +213,32 @@ def parse_view(request):
 
 
 
+from .services.statistics_analyzer import StatisticsAnalyzer
+
+from django.shortcuts import render
+from .models import PublicationStatistics
+from .services.statistics_analyzer import StatisticsAnalyzer
+
 def analyze_authors(request):
-    # Получаем список ID авторов из GET-запроса
-    ids = request.GET.get('ids', '').split(',')
-    authors = Author.objects.filter(id__in=ids).prefetch_related('statistics', 'publications')
+    # Получаем авторов для анализа (через фильтр по ID, если необходимо)
+    ids = request.GET.getlist('ids')  # Принимаем ID авторов из GET-запроса
+    queryset = PublicationStatistics.objects.filter(author_id__in=ids) if ids else PublicationStatistics.objects.all()
 
-    # Подготовка данных для отображения
-    stats_data = []
-    for author in authors:
-        for stat in author.statistics.all():
-            stats_data.append({
-                'author': author.full_name,
-                'year': stat.year,
-                'monograph': stat.monograph,
-                'textbook': stat.textbook,
-                'tutorial': stat.tutorial,
-                'other_publications': stat.other_publications,
-            })
+    # Создаем анализатор и вычисляем статистику
+    analyzer = StatisticsAnalyzer(queryset)
+    aggregated_results = analyzer.analyze()
 
-    # Создаем DataFrame из данных статистики
-    df = pd.DataFrame(stats_data)
+    # Отправляем данные в шаблон
+    return render(request, 'parser_app/analyze_authors.html', {
+        'aggregated_results': aggregated_results,
+        'authors': queryset.values_list('author__full_name', flat=True).distinct(),
+    })
 
-    # Генерация графика для демонстрации
-    plt.figure(figsize=(10, 6))
-    if not df.empty:
-        df.groupby('year')['monograph'].sum().plot(kind='bar', color='skyblue')
-    plt.title('Сумма монографий по годам')
-    plt.xlabel('Год')
-    plt.ylabel('Количество монографий')
 
-    # Сохраняем график в формате base64
-    buf = BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    graph_base64 = base64.b64encode(buf.getvalue()).decode()
-    buf.close()
 
-    # Подготовка данных для таблицы
-    context = {
-        'authors': authors,
-        'statistics_table': df.to_html(index=False) if not df.empty else "Нет данных для отображения",
-        'graph': graph_base64,
-    }
-    return render(request, 'parser_app/analyze_authors.html', context)
+
+
+
+
+
+

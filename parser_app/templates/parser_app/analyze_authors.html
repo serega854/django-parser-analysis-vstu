@@ -1,5 +1,3 @@
-<!-- analyze_authors.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,26 +6,46 @@
     <title>Анализ авторов</title>
 </head>
 <body>
-    <h1>Анализ выбранных авторов</h1>
+    <h1>Анализ статистики</h1>
 
-    <h2>Статистика</h2>
+    <h2>Общая статистика</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Параметр</th>
+                <th>Сумма</th>
+                <th>Среднее</th>
+                <th>Медиана</th>
+                <th>Максимум</th>
+                <th>Минимум</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for param, values in aggregated_results.items %}
+                <tr>
+                    <td>{{ param }}</td>
+                    <td>{{ values.sum }}</td>
+                    <td>{{ values.average }}</td>
+                    <td>{{ values.median }}</td>
+                    <td>{{ values.max }}</td>
+                    <td>{{ values.min }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Графики</h2>
     <div>
-        {{ statistics_table|safe }}
+        {% for param, graph in graphs.items %}
+            <h3>{{ param }}</h3>
+            <img src="data:image/png;base64,{{ graph }}" alt="{{ param }}">
+        {% endfor %}
     </div>
 
-    <h2>График</h2>
-    <div>
-        {% if graph %}
-            <img src="data:image/png;base64,{{ graph }}" alt="График статистики">
-        {% else %}
-            <p>Нет данных для отображения графика.</p>
-        {% endif %}
-    </div>
-
-    <h2>Выбранные авторы</h2>
+    <h2>Авторы</h2>
     <ul>
         {% for author in authors %}
-            <li>{{ author.full_name }} ({{ author.publication_count }} публикаций)</li>
+            <li>{{ author }}</li>
         {% endfor %}
     </ul>
 
