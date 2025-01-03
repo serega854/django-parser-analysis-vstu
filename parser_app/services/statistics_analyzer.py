@@ -1,6 +1,5 @@
 import matplotlib
-matplotlib.use('Agg')  # Используем бэкенд, не зависящий от GUI
-
+matplotlib.use('Agg')
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -15,9 +14,9 @@ class StatisticsAnalyzer:
         """
         self.data = self._prepare_data(queryset)
 
-        # Настройка для использования шрифтов с поддержкой кириллицы
-        rcParams['font.family'] = 'Arial'  # Или любой шрифт, поддерживающий кириллицу
-        rcParams['axes.unicode_minus'] = False  # Отключение проблемы с минусом в графиках
+
+        rcParams['font.family'] = 'Arial'
+        rcParams['axes.unicode_minus'] = False
 
     def _prepare_data(self, queryset):
         records = []
@@ -43,7 +42,7 @@ class StatisticsAnalyzer:
                 'certificate': stat.certificate,
                 'other_publications': stat.other_publications,
             })
-        print(f"Records: {records}")  # Проверка собранных данных
+        print(f"Records: {records}")
         return pd.DataFrame(records)
 
     def aggregate_statistics(self, column):
@@ -67,7 +66,7 @@ class StatisticsAnalyzer:
         Анализ данных и возвращение агрегирующих значений для всех колонок.
         """
         results = {}
-        # Ожидаем оригинальные английские названия столбцов для агрегации
+
         for column in [
             'monograph', 'textbook', 'tutorial', 'tutorial_griff',
             'article_russian_journal', 'article_foreign_journal',
@@ -85,7 +84,7 @@ class StatisticsAnalyzer:
         """
         graphs = {}
 
-        # Переименовываем столбцы данных на русский для графиков
+
         renamed_columns = {
             'monograph': 'монография',
             'textbook': 'учебник',
@@ -105,11 +104,11 @@ class StatisticsAnalyzer:
             'other_publications': 'другие_публикации'
         }
 
-        # График общего количества публикаций по годам с русскими названиями
+
         plt.figure(figsize=(12, 6))
         total_year_counts = self.data.groupby('year').sum()
 
-        # Переименование столбцов на русский только для графика
+
         total_year_counts = total_year_counts.rename(columns=renamed_columns)
 
         total_year_counts.plot(kind='line', figsize=(12, 6))
