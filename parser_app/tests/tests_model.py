@@ -2,7 +2,7 @@ from django.test import TestCase
 
 # Create your tests here.
 from django.test import TestCase
-from .models import Author, Publication, PublicationStatistics
+from parser_app.models import Author, Publication, PublicationStatistics
 
 class AuthorModelTest(TestCase):
     #проверяем что объект автора корректно создается с заданными значениями
