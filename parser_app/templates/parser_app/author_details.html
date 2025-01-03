@@ -4,23 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Детали автора</title>
+    <style>
+        /* Основные стили */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h1 {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        h2 {
+            color: #4CAF50;
+            margin-top: 20px;
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        /* Кнопка назад */
+        button {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #da190b;
+        }
+
+        /* Таблицы */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Стиль заголовков для таблиц */
+        h2, h3 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+    </style>
 </head>
 <body>
 
-
-    <br><br>
     <a href="javascript:history.back()">
         <button>Назад</button>
     </a>
- <br><br>
+
     <h1>Детали автора</h1>
     <h2>ФИО: {{ author.full_name }}</h2>
     <h3>Общее количество публикаций: {{ author.publication_count }}</h3>
 
     <h2>Статистика публикаций</h2>
-
-
-
     <table border="1">
         <thead>
             <tr>
@@ -83,7 +159,6 @@
             {% endfor %}
         </tbody>
     </table>
-
 
 </body>
 </html>
