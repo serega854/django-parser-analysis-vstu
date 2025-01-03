@@ -1,71 +1,58 @@
+import json
 from django.test import TestCase
-
-# Create your tests here.
-from django.test import TestCase
+from unittest.mock import patch
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.edge.service import Service
 from parser_app.models import Author, Publication, PublicationStatistics
 
-class AuthorModelTest(TestCase):
-    #проверяем что объект автора корректно создается с заданными значениями
-    def test_author_creation(self):
-        author = Author.objects.create(full_name="Иван Иванов", publication_count=5)
-        self.assertEqual(author.full_name, "Иван Иванов")
-        self.assertEqual(author.publication_count, 5)
-
-    #проверяем, что при не заполненном кол-ве публикаций по дефолту заполняется 0
-    def test_default_publication_count(self):
-        author = Author.objects.create(full_name="Иван Иванов")
-        self.assertEqual(author.publication_count, 0)
-
-class PublicationStatisticsModelTest(TestCase):
-    def test_statistics_creation(self): #проверяем что объект публикаций корректно создается
-        author = Author.objects.create(full_name="Иван Иванов")
-        stats = PublicationStatistics.objects.create(
-            author=author,
-            year=2025,
-            monograph=1,
-            textbook=2,
-            tutorial=3
-        )
-        self.assertEqual(stats.author, author)
-        self.assertEqual(stats.year, 2025)
-        self.assertEqual(stats.monograph, 1)
-        self.assertEqual(stats.textbook, 2)
-        self.assertEqual(stats.tutorial, 3) #проверяем соотсвутсвуют ли значения
-
-    def test_default_statistics_values(self):
-        author = Author.objects.create(full_name="Иван Иванов")
-        stats = PublicationStatistics.objects.create(author=author, year=2025)
-        self.assertEqual(stats.monograph, 0)
-        self.assertEqual(stats.textbook, 0)#проверяем что значения имеют 0 по умолчанию если их не задали
-        self.assertEqual(stats.tutorial, 0)
-
-    def test_cascade_delete_author(self):
-        author = Author.objects.create(full_name="Иван Иванов")
-        PublicationStatistics.objects.create(author=author, year=2025) #проверка каскадности, при удалении автора, удаляются его публикации
-        author.delete()
-        self.assertEqual(PublicationStatistics.objects.count(), 0)
 
 
-class PublicationModelTest(TestCase):
-    def test_str_representation(self):
-        author = Author.objects.create(full_name="Иван Иванов") #проверка, что заголовок является строкой и правильно заполняется
-        publication = Publication.objects.create(author=author, title="Научная статья")
-        self.assertEqual(str(publication), "Научная статья")
+class ParseLibraryTestCase(TestCase):
 
-    def test_cascade_delete_author(self):
-        author = Author.objects.create(full_name="Иван Иванов")
-        Publication.objects.create(author=author, title="Публикация 1")
-        Publication.objects.create(author=author, title="Публикация 2")
-        self.assertEqual(author.publications.count(), 2)
-        author.delete()
-        self.assertEqual(Publication.objects.count(), 0)  #проверка каскадного удаления, удаляется автор и его статьи каскадно тоже
+    def setUp(self):
+        # Создаём тестового автора
+        self.author_name = "Новрузов С.Р."
+        self.author = Author.objects.create(full_name=self.author_name, publication_count=0)
 
 
-class RelatedModelTest(TestCase):
-    def test_related_publications(self):
-        author = Author.objects.create(full_name="Иван Иванов") #проверка создается автор с двумя публикациями, проверяем что каждая публикация есть в списке публикаций автора
-        pub1 = Publication.objects.create(author=author, title="Публикация 1")
-        pub2 = Publication.objects.create(author=author, title="Публикация 2")
-        self.assertEqual(author.publications.count(), 2)
-        self.assertIn(pub1, author.publications.all())
-        self.assertIn(pub2, author.publications.all())
+    @patch('selenium.webdriver.Edge')
+    def test_parse_library_author_exists(self, MockWebDriver):
+        # Создаём существующего автора в базе данных
+        Author.objects.create(full_name=self.author_name, publication_count=0)
+
+        # Пример данных для POST-запроса
+        data = {
+            "surname": self.author_name,
+        }
+
+        response = self.client.post('/parse_library/', data, content_type="application/json")
+
+        # Проверка, что запрос отклонён
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['success'], False)
+        self.assertEqual(response.json()['error'], "Author with this surname already exists in the database.")
+
+    @patch('selenium.webdriver.Edge')
+    def test_parse_library_invalid_json(self, MockWebDriver):
+        # Пример неправильного JSON (неполный или с ошибкой)
+        data = '{"surname": "Новрузов С.Р."'
+
+        response = self.client.post('/parse_library/', data, content_type="application/json")
+
+        # Проверка, что ответ содержит ошибку
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['success'], False)
+        self.assertEqual(response.json()['error'], "Invalid JSON.")
+
+    @patch('selenium.webdriver.Edge')
+    def test_parse_library_missing_surname(self, MockWebDriver):
+        # Пример данных с отсутствующей фамилией
+        data = {}
+
+        response = self.client.post('/parse_library/', json.dumps(data), content_type="application/json")
+
+        # Проверка, что ошибка "Surname is required"
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['success'], False)
+        self.assertEqual(response.json()['error'], "Surname is required.")

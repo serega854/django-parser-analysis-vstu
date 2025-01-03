@@ -195,10 +195,14 @@ def parse_library(request):
             except ValueError:
                 continue
 
+        # Return a JSON response including parsed data
         return JsonResponse({
             "success": True,
             "message": "Data parsed and saved successfully.",
             "surname": surname,
+            "articles": articles_data,
+            "table_data": table_data,
+            "publication_count": publication_count,
         })
 
     except Exception as e:
@@ -206,6 +210,7 @@ def parse_library(request):
 
     finally:
         driver.quit()
+
 
 def parse_view(request):
     if request.method == "GET":
