@@ -33,8 +33,6 @@
 
 # Пример работы rest-api (гифка загружается примерно минуту)
 
-![рест](https://github.com/serega854/django-parser-analysis-vstu/blob/main/for_gif_to_github/рест.gif)
-
 #### POST Запрос для парсинга http://127.0.0.1:8000/parse_library/
 {
     "surname": "Дятлов М.Н."
@@ -48,6 +46,10 @@ Cookie : csrftoken={csrt-token}
 У меня
 X-CSRFToken AREjpX47ij6ZxrFY3WDDqgTq1QH74JOyWAg9lZBsp9gmH0yJYXhA76qUUGsMWUHf
 Cookie : csrftoken=AREjpX47ij6ZxrFY3WDDqgTq1QH74JOyWAg9lZBsp9gmH0yJYXhA76qUUGsMWUHf
+
+![рест](https://github.com/serega854/django-parser-analysis-vstu/blob/main/for_gif_to_github/рест.gif)
+
+
 
 
 
