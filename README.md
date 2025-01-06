@@ -21,7 +21,8 @@
 # Пример работы приложения
 
 
-![Описание картинки](images/your-image.jpg](https://github.com/serega854/django-parser-analysis-vstu/blob/main/for_gif_to_github/рест.gif)
+![рест](https://github.com/serega854/django-parser-analysis-vstu/blob/main/for_gif_to_github/рест.gif)
+
 
 
 
